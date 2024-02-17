@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.time.LocalDateTime;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
@@ -25,11 +23,7 @@ public class Robot extends TimedRobot {
 
     private Spark m_leftMotor = new Spark(0);
     private Spark m_rightMotor = new Spark(1);
-
     private Joystick driverJoystick = new Joystick(0);
-
-    private boolean toggledvalue = false;
-    private LocalDateTime lastToggleDateTime =java.time.LocalDateTime.now(); 
 
   @Override
   public void robotInit() {}
