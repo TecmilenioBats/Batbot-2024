@@ -4,12 +4,17 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.TimedRobot;
+import java.time.LocalDateTime;
 
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
+ * the package after creating t
+ import java.time.LocalDateTime;
+
  * project.
  */
 public class Robot extends TimedRobot {
@@ -17,6 +22,15 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
+
+    private Spark m_leftMotor = new Spark(0);
+    private Spark m_rightMotor = new Spark(1);
+
+    private Joystick driverJoystick = new Joystick(0);
+
+    private boolean toggledvalue = false;
+    private LocalDateTime lastToggleDateTime =java.time.LocalDateTime.now(); 
+
   @Override
   public void robotInit() {}
 
@@ -33,7 +47,23 @@ public class Robot extends TimedRobot {
   public void teleopInit() {}
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+
+    // Definicion de giro y velocidad
+    double turn = driverJoystick.getRawAxis(2);
+    double speed = -driverJoystick.getRawAxis(1);
+
+    // Asignacion del movimiento del robot
+    double left = speed + turn;
+    double right = turn - speed;
+
+    double leftMotor = left;
+    double rightMotor = right;
+
+    // Seteo del movimiento de los motores
+    m_leftMotor.set(leftMotor);
+    m_rightMotor.set(rightMotor);
+  }
 
   @Override
   public void disabledInit() {}
