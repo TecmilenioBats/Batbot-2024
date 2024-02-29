@@ -8,13 +8,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import java.util.List;
-
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
 import com.revrobotics.*;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 /**
@@ -30,7 +30,10 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
-
+    private final PWMSparkMax m_leftDrive = new PWMSparkMax(0);
+    private final PWMSparkMax m_rightDrive = new PWMSparkMax(1);
+    private final DifferentialDrive m_robotDrive = new DifferentialDrive(m_leftDrive, m_rightDrive);
+    private final XboxController m_Controller = new XboxController(0);
     private Spark m_leftMotor = new Spark(0);
     private Spark m_rightMotor = new Spark(1);
     private Joystick driverJoystick = new Joystick(0);
@@ -82,9 +85,11 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
+    m_robotDrive.arcadeDrive(-m_Controller.getRightY(), m_Controller.getRightX());
+
     // Definicion de giro y velocidad
-    double turn = driverJoystick.getRawAxis(2);
-    double speed = -driverJoystick.getRawAxis(1);
+    double turn = m_Controller.getRightX();
+    double speed = -m_Controller.getRightY();
 
     // Asignacion del movimiento del robot
     double left = speed + turn;
@@ -98,14 +103,19 @@ public class Robot extends TimedRobot {
     m_rightMotor.set(rightMotor);
 
     // Código para el funcionamiento del shooter
-    if(driverJoystick.getRawButton(7)){
+    if(m_Controller.getRightTriggerAxis() > 0.5){
       agarrar();
-    }else if(driverJoystick.getRawButton(8)){
+    }else if(m_Controller.getLeftTriggerAxis() > 0.5){
       lanzar();
     }else{
       // Detener motores
       stop();
     }
+
+    if (m_Controller.getAButton()) {
+      lanzar50();
+    }
+
   }
 
   @Override
@@ -134,6 +144,12 @@ public class Robot extends TimedRobot {
   public void lanzar(){
     m_shooter1.set(-0.7D);
     m_shooter2.set(-0.7D);
+  }
+
+  public void lanzar50(){
+     m_shooter1.set(-0.45D);
+    m_shooter2.set(-0.45D);
+    //:)
   }
 
   public void stop(){
